@@ -6,7 +6,7 @@
 @section('content')
     <div class="container">
         <div class="row mt-2">
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <div class="form-group mt-2">
                     <div class="alert alert-info p-2">
                         <strong>Cung Cấp đến mọi người ⭐ ⭐ ⭐ ⭐ ⭐</strong>
@@ -14,21 +14,19 @@
                     </div>
                     <div class="btn-group d-flex" role="group"><a class="btn btn-success w-100" href="https://cungcap.net" target="_blank"><h4>Đăng tin miễn phí</h4></a></div>
                 </div>
-            </div>
-            <div class="col-md-8">
                 @if(count($listArticle)>0)
                     <ul class="list-group">
                         <?php $i=0; ?>
                         @foreach($listArticle as $key => $item)
                             <?php
-                                $filtered = array_filter($item['article'], function($item) {
-                                    static $counts = array();
-                                    if(isset($counts[$item->id])) {
-                                        return false;
-                                    }
-                                    $counts[$item->id] = true;
-                                    return true;
-                                });
+                            $filtered = array_filter($item['article'], function($item) {
+                                static $counts = array();
+                                if(isset($counts[$item->id])) {
+                                    return false;
+                                }
+                                $counts[$item->id] = true;
+                                return true;
+                            });
                             ?>
                             <li class="list-group-item">
                                 <h3><a href="{!! route('view.keyword',array($item['keyword_id'],$item['keyword_slug'])) !!}">{!! $key !!}</a></h3>
@@ -42,8 +40,24 @@
                             </li>
                         @endforeach
                     </ul>
+                    <div class="form-group mt-2">
+                        {{ $listArticle->links() }}
+                    </div>
                 @endif
             </div>
+            <div class="col-md-4">
+                @if(count($getNewKeywordNew))
+                    <div class="form-group mt-2">
+                        <h4>Từ khóa mới cập nhật </h4>
+                        <ul class="list-group">
+                            @foreach($getNewKeywordNew as $keyword)
+                                <li class="list-group-item"><a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
+
         </div>
     </div>
 @endsection

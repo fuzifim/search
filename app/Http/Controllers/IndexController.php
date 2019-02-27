@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Input;
 use Session;
 use Auth;
@@ -25,6 +26,12 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $this->_date=Carbon::now()->format('m/d/Y');
+        $getNewKeywordNew = Cache::store('memcached')->remember('getNewKeywordNew',1, function()
+        {
+            return DB::table('keywords')
+                ->orderBy('updated_at','desc')
+                ->take(20)->get();
+        });
         $getArticle = Cache::store('memcached')->remember('list_home_date_'.$this->_date,1, function()
         {
             return DB::table('article')
@@ -45,9 +52,17 @@ class IndexController extends Controller
             $group[$value->keyword]['traffic'] = $value->traffic;
             $group[$value->keyword]['article'][] = $value;
         }
-        //dd($group);
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        // Create a new Laravel collection from the array data
+        $itemCollection = collect($group);
+        $perPage = 10;
+        $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
+        $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
+        $paginatedItems->setPath($request->url());
         return view('index',array(
-            'listArticle'=>$group
+            'listArticle'=>$paginatedItems,
+            'getNewKeywordNew'=>$getNewKeywordNew
         ));
     }
     public function viewKeyword(Request $request){
@@ -60,20 +75,33 @@ class IndexController extends Controller
                 return DB::table('keywords')->where('id',$id)->where('slug',$slug)->first();
             });
             if(!empty($keyword->keyword)){
-                $getArticle=DB::table('article')
-                    ->join('article_join_keyword','article_join_keyword.article_id','=','article.id')
-                    ->where('article_join_keyword.keyword_id',$keyword->id)
-                    ->groupBy('article.id')
-                    ->get();
-                $getNewKeywordRegion=DB::table('keywords')
-                    ->where('id','!=',$keyword->id)
-                    ->where('region',$keyword->region)
-                    ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),$this->_date)
-                    ->get();
+                $getArticle = Cache::store('memcached')->remember('getArticle_keyword_'.$keyword->id,1, function() use ($keyword)
+                {
+                    return DB::table('article')
+                        ->join('article_join_keyword','article_join_keyword.article_id','=','article.id')
+                        ->where('article_join_keyword.keyword_id',$keyword->id)
+                        ->groupBy('article.id')
+                        ->get();
+                });
+                $getNewKeywordRegion = Cache::store('memcached')->remember('getNewKeywordRegion_'.$keyword->id.'_'.$keyword->region.'_'.$this->_date,1, function() use ($keyword)
+                {
+                    return DB::table('keywords')
+                        ->where('id','!=',$keyword->id)
+                        ->where('region',$keyword->region)
+                        ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),$this->_date)
+                        ->get();
+                });
+                $getNewKeywordNew = Cache::store('memcached')->remember('getNewKeywordNew',1, function()
+                {
+                    return DB::table('keywords')
+                        ->orderBy('updated_at','desc')
+                        ->take(20)->get();
+                });
                 return view('viewKeyword',array(
                     'keyword'=>$keyword,
                     'listArticle'=>$getArticle,
-                    'listKeywordRegion'=>$getNewKeywordRegion
+                    'listKeywordRegion'=>$getNewKeywordRegion,
+                    'getNewKeywordNew'=>$getNewKeywordNew
                 ));
             }
         }

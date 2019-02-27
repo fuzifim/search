@@ -34,13 +34,25 @@
                 @endif
             </div>
             <div class="col-md-4">
-                <h4>Các từ khóa khác tại {!! $keyword->region !!} </h4>
-                @if(count($listKeywordRegion))
-                    <ul class="list-group">
-                        @foreach($listKeywordRegion as $keyword)
-                            <li class="list-group-item"><a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a></li>
-                        @endforeach
-                    </ul>
+                <div class="form-group">
+                    <h4>Các từ khóa khác tại {!! $keyword->region !!} </h4>
+                    @if(count($listKeywordRegion))
+                        <ul class="list-group">
+                            @foreach($listKeywordRegion as $keyword)
+                                <li class="list-group-item"><a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a></li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+                @if(count($getNewKeywordNew))
+                    <div class="form-group mt-2">
+                        <h4>Từ khóa mới cập nhật </h4>
+                        <ul class="list-group">
+                            @foreach($getNewKeywordNew as $keyword)
+                                <li class="list-group-item"><a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
             </div>
         </div>
