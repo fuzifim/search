@@ -28,6 +28,19 @@
                                 return true;
                             });
                             ?>
+                            <?php $i++;?>
+                            @if($i==3 || $i==9)
+                                <div class="form-group mt-2">
+                                    <ins class="adsbygoogle"
+                                         style="display:block"
+                                         data-ad-client="ca-pub-6739685874678212"
+                                         data-ad-slot="7536384219"
+                                         data-ad-format="auto"></ins>
+                                    <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
+                                </div>
+                            @endif
                             <li class="list-group-item">
                                 <h3><a href="{!! route('view.keyword',array($item['keyword_id'],$item['keyword_slug'])) !!}">{!! $key !!}</a></h3>
                                 <strong>Trên: {!! $item['traffic'] !!}.000 lượt tìm kiếm </strong><small>Ngày: {!! \Carbon\Carbon::parse($item['created_at'])->format('d-m-Y') !!} - Quốc gia: {!! $item['keyword_region'] !!}</small>
@@ -56,6 +69,18 @@
                         </ul>
                     </div>
                 @endif
+                <div class="form-group mt-2">
+                    <div class="form-group">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6739685874678212"
+                             data-ad-slot="7536384219"
+                             data-ad-format="auto"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+                </div>
             </div>
 
         </div>

@@ -20,7 +20,21 @@
                 <p><strong>Trên: {!! $keyword->traffic !!}.000 lượt tìm kiếm </strong><small>Ngày: {!! \Carbon\Carbon::parse($keyword->created_at)->format('d-m-Y') !!}</small></p>
                 <p>Quốc gia: {!! $keyword->region !!}</p>
                 @if(count($listArticle))
+                    <?php $i=0; ?>
                     @foreach($listArticle as $article)
+                        <?php $i++;?>
+                        @if($i==3 || $i==8)
+                            <div class="form-group mt-2">
+                                <ins class="adsbygoogle"
+                                     style="display:block"
+                                     data-ad-client="ca-pub-6739685874678212"
+                                     data-ad-slot="7536384219"
+                                     data-ad-format="auto"></ins>
+                                <script>
+                                    (adsbygoogle = window.adsbygoogle || []).push({});
+                                </script>
+                            </div>
+                        @endif
                         <li class="list-group-item">
                             @if(!empty($article->img_xs))
                                 <img src="{!! $article->img_xs !!}" alt="{!! $article->title !!}">
@@ -43,6 +57,16 @@
                             @endforeach
                         </ul>
                     @endif
+                </div>
+                <div class="form-group mt-2">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-6739685874678212"
+                         data-ad-slot="7536384219"
+                         data-ad-format="auto"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 </div>
                 @if(count($getNewKeywordNew))
                     <div class="form-group mt-2">
