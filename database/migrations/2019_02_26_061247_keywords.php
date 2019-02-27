@@ -15,9 +15,12 @@ class Keywords extends Migration
     {
         Schema::create('keywords', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('type',25)->nullable();
             $table->string('keyword',255)->nullable();
             $table->string('base_64')->index();
+            $table->string('slug',500)->nullable();
             $table->string('region',25)->nullable();
+            $table->string('traffic',25)->nullable();
             $table->enum('ads', ['pending','active','delete']);
             $table->enum('status', ['pending','active','delete','blacklist']);
             $table->timestamps();

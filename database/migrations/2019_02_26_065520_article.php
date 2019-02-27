@@ -15,11 +15,13 @@ class Article extends Migration
     {
         Schema::create('article', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type',255)->nullable();
             $table->string('title',255)->nullable();
             $table->string('base_64')->index();
             $table->mediumText('description')->nullable();
-            $table->mediumText('image')->nullable();
+            $table->mediumText('img')->nullable();
+            $table->mediumText('img_thumb')->nullable();
+            $table->mediumText('img_small')->nullable();
+            $table->mediumText('img_xs')->nullable();
             $table->string('author',255)->nullable();
             $table->mediumText('source')->nullable();
             $table->string('region',25)->nullable();

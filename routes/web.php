@@ -11,8 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', ['as' => 'home',
+    'uses' => 'IndexController@index']);
 Route::get('/getTrends', ['as' => 'get.trends',
     'uses' => 'IndexController@getTrends']);
+Route::get('/{id}-{slug}', ['as' => 'view.keyword',
+    'uses' => 'IndexController@viewKeyword']);
