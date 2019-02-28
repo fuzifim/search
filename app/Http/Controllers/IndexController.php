@@ -25,7 +25,9 @@ class IndexController extends Controller
     }
     public function index(Request $request)
     {
-        $this->_date=Carbon::now()->format('m/d/Y');
+        $dt=Carbon::now();
+        $dt->subDays(1)->diffForHumans();
+        $this->_date=$dt->format('m/d/Y');
         $getNewKeywordNew = Cache::store('memcached')->remember('getNewKeywordNew',1, function()
         {
             return DB::table('keywords')
@@ -37,7 +39,7 @@ class IndexController extends Controller
             return DB::table('article')
                 ->join('article_join_keyword','article_join_keyword.article_id','=','article.id')
                 ->join('keywords','keywords.id','=','article_join_keyword.keyword_id')
-                ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),$this->_date)
+                ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
                 ->select('article.id',DB::raw('keywords.id as keyword_id'),DB::raw('keywords.slug as keyword_slug'),DB::raw('keywords.region as keyword_region'),
                     'article.title','article.description','article.img_xs','article.author','article.source',
                     'article.region','article.created_at','article.updated_at','keywords.keyword','keywords.traffic','keywords.ads')
@@ -66,7 +68,9 @@ class IndexController extends Controller
         ));
     }
     public function viewKeyword(Request $request){
-        $this->_date=Carbon::now()->format('m/d/Y');
+        $dt=Carbon::now();
+        $dt->subDays(1)->diffForHumans();
+        $this->_date=$dt->format('m/d/Y');
         $id = $request->route('id');
         $slug = $request->route('slug');
         if(!empty($id) && !empty($slug)){
@@ -88,7 +92,7 @@ class IndexController extends Controller
                     return DB::table('keywords')
                         ->where('id','!=',$keyword->id)
                         ->where('region',$keyword->region)
-                        ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),$this->_date)
+                        ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
                         ->get();
                 });
                 $getNewKeywordNew = Cache::store('memcached')->remember('getNewKeywordNew',1, function()
