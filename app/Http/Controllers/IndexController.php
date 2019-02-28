@@ -54,6 +54,7 @@ class IndexController extends Controller
             $group[$value->keyword]['traffic'] = $value->traffic;
             $group[$value->keyword]['article'][] = $value;
         }
+        arsort($group);
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
 
         // Create a new Laravel collection from the array data
