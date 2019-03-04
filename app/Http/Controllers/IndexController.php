@@ -26,7 +26,7 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $dt=Carbon::now();
-        $dt->subDays(1)->diffForHumans();
+        $dt->subDays(2)->diffForHumans();
         $this->_date=$dt->format('m/d/Y');
         $getNewKeywordNew = Cache::store('memcached')->remember('getNewKeywordNew',1, function()
         {
