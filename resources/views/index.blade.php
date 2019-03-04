@@ -64,7 +64,10 @@
                         <h4>Từ khóa mới cập nhật </h4>
                         <ul class="list-group">
                             @foreach($getNewKeywordNew as $keyword)
-                                <li class="list-group-item"><a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a></li>
+                                <li class="list-group-item">
+                                    <a href="{!! route('view.keyword',array($keyword->id,$keyword->slug)) !!}">{!! $keyword->keyword !!}</a>
+                                    <small>{!! $keyword->updated_at !!}</small>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
