@@ -26,8 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->call('\App\Http\Controllers\Auth\IndexController@getTrends')->dailyAt('01:00');
-        $schedule->call('\App\Http\Controllers\Auth\IndexController@getTrends')->dailyAt('12:00');
+        $schedule->call('\App\Http\Controllers\Auth\IndexController@getTrends')->hourly();
     }
 
     /**
