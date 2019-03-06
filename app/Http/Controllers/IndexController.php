@@ -43,7 +43,7 @@ class IndexController extends Controller
                 ->select('article.id',DB::raw('keywords.id as keyword_id'),DB::raw('keywords.slug as keyword_slug'),DB::raw('keywords.region as keyword_region'),
                     'article.title','article.description','article.img_xs','article.author','article.source',
                     'article.region','article.created_at','article.updated_at','keywords.keyword','keywords.traffic','keywords.ads')
-                ->get();
+                ->limit(500)->get();
         });
         $group = array();
         foreach ( $getArticle as $value ) {
