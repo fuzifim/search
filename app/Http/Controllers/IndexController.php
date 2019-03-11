@@ -34,37 +34,14 @@ class IndexController extends Controller
                 ->orderBy('updated_at','desc')
                 ->take(20)->get();
         });
-        $getArticle = Cache::store('memcached')->remember('list_home_date_'.$this->_date,1, function()
+        $getKeywords = Cache::store('memcached')->remember('list_home_date_'.$this->_date,1, function()
         {
-            return DB::table('article')
-                ->join('article_join_keyword','article_join_keyword.article_id','=','article.id')
-                ->join('keywords','keywords.id','=','article_join_keyword.keyword_id')
-                ->where(DB::raw("(DATE_FORMAT(keywords.updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
-                ->select('article.id',DB::raw('keywords.id as keyword_id'),DB::raw('keywords.slug as keyword_slug'),DB::raw('keywords.region as keyword_region'),
-                    'article.title','article.description','article.img_xs','article.author','article.source',
-                    'article.region','article.created_at','article.updated_at','keywords.keyword','keywords.traffic','keywords.ads')
-                ->limit(2000)->get();
+            return DB::table('keywords')
+                ->where(DB::raw("(DATE_FORMAT(updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
+                ->simplePaginate(20);
         });
-        $group = array();
-        foreach ( $getArticle as $value ) {
-            $group[$value->keyword]['keyword_id'] = $value->keyword_id;
-            $group[$value->keyword]['keyword_slug'] = $value->keyword_slug;
-            $group[$value->keyword]['keyword_region'] = $value->keyword_region;
-            $group[$value->keyword]['created_at'] = $value->created_at;
-            $group[$value->keyword]['traffic'] = $value->traffic;
-            $group[$value->keyword]['article'][] = $value;
-        }
-        arsort($group);
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-
-        // Create a new Laravel collection from the array data
-        $itemCollection = collect($group);
-        $perPage = 10;
-        $currentPageItems = $itemCollection->slice(($currentPage * $perPage) - $perPage, $perPage)->all();
-        $paginatedItems= new LengthAwarePaginator($currentPageItems , count($itemCollection), $perPage);
-        $paginatedItems->setPath($request->url());
         return view('index',array(
-            'listArticle'=>$paginatedItems,
+            'listKeywords'=>$getKeywords,
             'getNewKeywordNew'=>$getNewKeywordNew
         ));
     }
@@ -86,7 +63,7 @@ class IndexController extends Controller
                         ->join('article_join_keyword','article_join_keyword.article_id','=','article.id')
                         ->where('article_join_keyword.keyword_id',$keyword->id)
                         ->groupBy('article.id')
-                        ->get();
+                        ->simplePaginate(50);
                 });
                 $getNewKeywordRegion = Cache::store('memcached')->remember('getNewKeywordRegion_'.$keyword->id.'_'.$keyword->region.'_'.$this->_date,1, function() use ($keyword)
                 {
