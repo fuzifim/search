@@ -25,6 +25,7 @@ class IndexController extends Controller
     }
     public function index(Request $request)
     {
+        $page = $request->has('page') ? $request->query('page') : 1;
         $dt=Carbon::now();
         $dt->subDays(1)->diffForHumans();
         $this->_date=$dt->format('m/d/Y');
@@ -34,10 +35,11 @@ class IndexController extends Controller
                 ->orderBy('updated_at','desc')
                 ->take(20)->get();
         });
-        $getKeywords = Cache::store('memcached')->remember('list_home_date_'.$this->_date,1, function()
+        $getKeywords = Cache::store('memcached')->remember('list_home_date_'.$this->_date,'_page_'.$page,1, function()
         {
             return DB::table('keywords')
                 ->where(DB::raw("(DATE_FORMAT(updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
+                ->orderBy('updated_at','desc')
                 ->simplePaginate(20);
         });
         return view('index',array(
