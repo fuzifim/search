@@ -39,7 +39,7 @@
                             @endif
                             <li class="list-group-item">
                                 <h3><a href="{!! route('view.keyword',array($item->id,$item->slug)) !!}">{!! $item->keyword !!}</a></h3>
-                                <strong>Trên: {!! $item->traffic !!}.000 lượt tìm kiếm </strong><small>Ngày: {!! \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') !!} - Quốc gia: {!! $item->region !!}</small>
+                                <strong>Trên: {!! $item->traffic !!}.000 lượt tìm kiếm </strong><small>Ngày: {!! \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') !!} - Quốc gia: {!! $item->region !!}</small>
                                 @foreach($article as $itemArticle)
                                     <p>
                                         {!! $itemArticle->title !!}<br>
