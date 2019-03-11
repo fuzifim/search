@@ -35,7 +35,7 @@ class IndexController extends Controller
                 ->orderBy('updated_at','desc')
                 ->take(20)->get();
         });
-        $getKeywords = Cache::store('memcached')->remember('list_home_date_'.$this->_date,'_page_'.$page,1, function()
+        $getKeywords = Cache::store('memcached')->remember('list_home_date_'.$this->_date.'_page_'.$page,1, function()
         {
             return DB::table('keywords')
                 ->where(DB::raw("(DATE_FORMAT(updated_at,'%m/%d/%Y'))"),'>=',$this->_date)
